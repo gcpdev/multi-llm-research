@@ -1,5 +1,5 @@
 from crewai import Agent, Task, Crew, LLM, Process
-from crewai.tools import BrowserTool
+from crewai_tools import (SerperDevTool, WebsiteSearchTool)
 
 # Define LLM models (replace with actual model lists from providers)
 llm_models = {
@@ -8,16 +8,24 @@ llm_models = {
     "gemini": ["gemini-2.0-flash", "gemini-2.0-flash-lite-preview-02-05"] # Example model
 }
 
+scholar_search_tool = SerperDevTool(
+    search_url="https://google.serper.dev/scholar",
+    n_results=2,
+)
+
+rag_search_tool = WebsiteSearchTool()
+
+
 def create_researcher_agent(llm_provider, llm_model, instruction_prompt, agent_name="Researcher"):
     llm = LLM(model=f"{llm_provider}/{llm_model}")
 
-    system_prompt = f"You are a world-class scientific researcher. {instruction_prompt} Your goal is to produce a high-quality research proposal in markdown format."
+    system_prompt = f"You are a world-class scientific researcher. Research to the best the following topic: {instruction_prompt} Your goal is to produce a high-quality research proposal in markdown format."
     return Agent(
         role='Researcher',
         name=agent_name,
         llm=llm,
         goal=system_prompt,
-        tools=[BrowserTool()],
+        tools=[scholar_search_tool,rag_search_tool],
         backstory="You have a PhD and 10 years of experience in scientific research."
     )
 
@@ -31,6 +39,7 @@ def create_reviewer_agent(llm_provider, llm_model, instruction_prompt, agent_nam
         name=agent_name,
         llm=llm,
         goal=system_prompt,
+        tools=[scholar_search_tool,rag_search_tool],
         backstory="You are a highly critical and detail-oriented reviewer for top scientific conferences."
     )
 
@@ -86,7 +95,7 @@ if __name__ == '__main__':
     # Example usage (for testing backend logic)
     agent_configs = [
         {'role': 'Researcher', 'llm_provider': 'openai', 'llm_model': 'catgpt-4o-latest', 'instruction_prompt': 'Focus on novelty and methodology.', 'agent_name': 'Researcher 1'},
-        {'role': 'Reviewer', 'llm_provider': 'google_gemini', 'llm_model': 'gemini-2.0-flash', 'instruction_prompt': 'Critique the proposal for feasibility and impact.', 'agent_name': 'Reviewer 1'}
+        {'role': 'Reviewer', 'llm_provider': 'gemini', 'llm_model': 'gemini-2.0-flash', 'instruction_prompt': 'Critique the proposal for feasibility and impact.', 'agent_name': 'Reviewer 1'}
     ]
     topic = "The impact of AI on climate change research"
     results = run_workflow(topic, agent_configs)

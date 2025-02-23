@@ -1,5 +1,5 @@
 import streamlit as st
-# from crewai_app import llm_models, run_workflow # Assuming backend in crewai_app.py
+from crewai_app import llm_models, run_workflow # Assuming backend in crewai_app.py
 
 st.title("Research Proposal & Paper Assistant")
 
