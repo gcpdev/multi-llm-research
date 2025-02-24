@@ -17,7 +17,7 @@ st.set_page_config(layout="wide", page_title="Research Assistant")
 
 openai_models = ["chatgpt-4o-latest", "o3-mini", "o1"]
 anthropic_models = ["claude-3-5-haiku-latest", "claude-3-5-sonnet-latest"]
-google_models = ["gemini-2.0-flash-latest", "gemini-2.0-flash-lite-preview-02-05"]
+google_models = ["gemini-2.0-flash", "gemini-2.0-flash-lite-preview-02-05"]
 xai_models = ["grok-2-latest"]
 
 # Initialize session state
@@ -129,15 +129,15 @@ def create_crew(workflow_steps, agents_config, document_content):
             agent_config = next(a for a in agents_config if a['id'] == step['agent_id'])
             agent = crew_agents[agent_config['id']]
             add_debug_log(f"Creating task for step {idx+1}: {agent_config['name']}")
-            add_debug_log(f"Agent type: {type(agent)}")
+            add_debug_log(f"Agent: {agent}")
             add_debug_log(f"Agent repr: {repr(agent)}")
             task = create_task(idx, step, agent_config, agent, document_content, tasks)
             tasks.append(task)
-        
+        add_debug_log(list(crew_agents.values()))
         crew = Crew(
             agents=list(crew_agents.values()),
             tasks=tasks,
-            verbose=2,
+            verbose=True,
             process=Process.sequential
         )
         add_debug_log(f"CrewAI workflow created with {len(tasks)} tasks and {len(crew_agents)} agents")
@@ -182,8 +182,8 @@ def run_workflow():
         add_debug_log("Starting workflow kickoff")
         result = crew.kickoff()
         
-        add_debug_log(f"Workflow completed with result length: {len(result)} characters")
-        st.session_state.editor_content = result
+        add_debug_log(f"Workflow completed with result length: {len(result.raw)} characters")
+        st.session_state.editor_content = result.raw
         progress_bar.progress(1.0)
         status_text.text("Workflow completed successfully!")
         add_debug_log("Workflow execution successful", "info")
@@ -292,7 +292,7 @@ with left_col:
                 agent_provider = "anthropic"
                 agent_model = st.selectbox("Model", anthropic_models)
             elif agent_provider == "Google Gemini":
-                agent_provider = "google"
+                agent_provider = "gemini"
                 agent_model = st.selectbox("Model", google_models)
             elif agent_provider == "Grok":
                 agent_provider = "xai"

@@ -52,3 +52,4 @@ logs/
 /node_modules
 .coverage
 htmlcov/
+db/
