@@ -48,12 +48,14 @@ def create_tasks(topic, agents):
     for agent in agents:
         if agent.role == 'Researcher':
             task = Task(
-                description=f"Develop a research proposal on the topic: {topic}. Format the output in markdown.",
+                description=f"Develop a research proposal on the topic: {topic}.",
+                expected_output="Format the output in markdown. It should contain a detailed research plan to the user topic.",
                 agent=agent
             )
         elif agent.role == 'Reviewer':
             task = Task(
-                description=f"Review the research proposal on the topic: {topic}. Check if the actual state of the art and literature review was comprehensive enough. Provide a detailed review in markdown format.",
+                description=f"Review the research proposal on the topic: {topic}. Check if the actual state of the art and literature review was comprehensive enough.",
+                expected_output="A detailed reviewed version of the input in markdown format, addressing all review points.",
                 agent=agent
             )
         tasks.append(task)
@@ -74,19 +76,19 @@ def run_workflow(topic, agent_configs, workflow_type="sequential"): # workflow_t
         crew = Crew(
             agents=agents,
             tasks=tasks,
-            verbose=2 # Show workflow progress
+            verbose=True # Show workflow progress
         )
         results = crew.kickoff() # For sequential, results are in order of tasks
-        return results
+        return results.raw
     elif workflow_type == "parallel":
          crew = Crew(
             agents=agents,
             tasks=tasks,
             process=Process.parallel, # For parallel execution
-            verbose=2 # Show workflow progress
+            verbose=True # Show workflow progress
         )
          results = crew.kickoff() # For parallel, results order might not be guaranteed
-         return results
+         return results.raw
     else:
         raise ValueError("Invalid workflow type")
 

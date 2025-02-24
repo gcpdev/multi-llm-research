@@ -13,7 +13,7 @@ with st.sidebar:
         st.subheader(f"Agent {i+1}")
         agent_name = st.text_input(f"Agent Name (Optional)", f"Agent {i+1}", key=f"agent_name_{i}")
         agent_role = st.selectbox(f"Role", ["Researcher", "Reviewer"], key=f"agent_role_{i}")
-        llm_provider = st.selectbox(f"LLM Provider", ["openai", "anthropic", "google_gemini"], key=f"llm_provider_{i}")
+        llm_provider = st.selectbox(f"LLM Provider", ["openai", "anthropic", "gemini"], key=f"llm_provider_{i}")
         model_options = llm_models.get(llm_provider, []) # Get models for selected provider
         llm_model = st.selectbox(f"Model", model_options, key=f"llm_model_{i}")
         instruction_prompt = st.text_area(f"Instruction Prompt", "", height=100, key=f"instruction_prompt_{i}")
@@ -36,8 +36,8 @@ with col1:
     research_topic = st.text_input("Research Topic", "AI in Healthcare")
     if st.button("Run Workflow"):
         with st.spinner("Workflow Running..."): # Feedback during workflow
-            output_results = run_workflow(research_topic, agent_configs, workflow_type) # Call backend function
-            st.session_state.markdown_output = "\n\n".join(output_results) # Store output for display
+            output_result = run_workflow(research_topic, agent_configs, workflow_type) # Call backend function
+            st.session_state.markdown_output = output_result # Store output for display
 
 with col2:
     st.header("Output (Markdown)")
