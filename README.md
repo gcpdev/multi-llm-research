@@ -1,0 +1,1 @@
+This Gemini version is not very functional at the moment.

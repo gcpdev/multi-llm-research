@@ -1,0 +1,10 @@
+llm_services:
+  openai:
+    api_key: "${OPENAI_API_KEY}"
+    model: "chatgpt-4o-latest" # Or other OpenAI models
+  anthropic:
+    api_key: "${ANTHROPIC_API_KEY}"
+    model: "claude-3-5-sonnet-latest" # Or other Anthropic Claude models
+  gemini: # Assuming direct API access or via Vertex AI
+    api_key: "${GEMINI_API_KEY}" # Or service account details
+    model: "gemini-2.0-flash" # Or other Gemini models
