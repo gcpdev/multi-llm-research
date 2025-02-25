@@ -4,13 +4,13 @@ from crewai_tools import (SerperDevTool, WebsiteSearchTool)
 # Define LLM models (replace with actual model lists from providers)
 llm_models = {
     "openai": ["chatgpt-4o-latest", "o1", "o3-mini"],
-    "anthropic": ["claude-3-5-sonnet-latest", "claude-3-5-haiku-latest"],
-    "gemini": ["gemini-2.0-flash", "gemini-2.0-flash-lite-preview-02-05"] # Example model
+    "anthropic": ["claude-3-7-sonnet-latest", "claude-3-5-haiku-latest"],
+    "gemini": ["gemini-2.0-flash-thinking-exp","gemini-2.0-flash"] # Example model
 }
 
 scholar_search_tool = SerperDevTool(
     search_url="https://google.serper.dev/scholar",
-    n_results=2,
+    n_results=10,
 )
 
 rag_search_tool = WebsiteSearchTool()
